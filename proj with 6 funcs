@@ -1,0 +1,341 @@
+// FCI - Programming 1 - 2018 - Assignment 3
+// Program Name: CS112-2018-2nd -G13&14-20170343-20170364-20170341-A3.cpp
+// Last Modification Date: 29/03/2018
+// Author1 and ID and Group: Abdelrahman Nasr Abdelsalam Ali    20170343  G13
+// Author2 and ID and Group: Yousef Osama Sayed Famhi           20170341  G13
+// Author2 and ID and Group: Mohamed Ahmed Abdelnaby   	        20170364  G14
+// Teaching Assistant: Mohamed Atta - Ibrahim Zeidan
+// Purpose:  performing discrete math operations.
+
+#include <iostream>
+#include <bits/stdc++.h>
+#include <fstream>
+#include <cmath>
+#include <math.h>
+
+using namespace std;
+
+valarray<int> new_data (valarray<int> X, string name, int set_size); // choice 1 Function
+valarray<int> load_data (string name, valarray<int> X, int& set_size); // choice 2 Function
+void print_set (valarray<int> X, int set_size); // choice 3 Function
+
+void diff(valarray<int> set1, valarray<int> set2, int set1_length, int set2_length); // choice 7 Function
+void cart_product(valarray<int> set1, valarray<int> set2, int set1_length, int set2_length); // choice 8 Function
+void power_set(valarray<int> set1, int set1_length); // choice 9 Function
+void disjoint (valarray <int> A, valarray <int> B , int Asize , int Bsize ) ; // fun. to check if disjoint choice 10
+void eq (valarray <int> A , valarray <int > B , int Asize , int Bsize) ; // fun. to check if equal choice 11
+void propersub (valarray<int>A , valarray <int> B , int Asize ,int Bsize) ;  // choice 12
+
+
+int main()
+{
+      string name_file;
+      int Bsize=0,
+          Asize=0;
+      string choice;
+      valarray<int> A(60) , B(60) ;
+
+        while (true){
+            cout << "\n";
+            cout << " =====================================================" << endl;
+            cout << " = (1)  Enter a new data set                         =" << endl;
+            cout << " = (2)  Load 2 data sets                             =" << endl;
+            cout << " = (3)  Display data sets                            =" << endl;
+            cout << " = (4)  Union of A,B                                 =" << endl;
+            cout << " = (5)  Intersection of A,B                          =" << endl;
+            cout << " = (6)  A-B                                          =" << endl;
+            cout << " = (7)  B-A                                          =" << endl;
+            cout << " = (8)  Cartesian Product of A,B                     =" << endl;
+            cout << " = (9)  Power set of A                               =" << endl;
+            cout << " = (10) Check if A , B are disjoint                  =" << endl;
+            cout << " = (11) Check if A,B are equal                       =" << endl;
+            cout << " = (12) Check if a set is a proper subset of another =" << endl;
+            cout << " = (E)  End                                          =" << endl;
+            cout << " =====================================================" << endl;
+            cout << endl;
+
+            cout << ">> ";
+            cin >> choice;
+
+            if (choice == "e" || choice == "E") break;
+
+            else if (choice == "1")
+
+            {
+                cout << "1st file name : " ;
+                cin.ignore ();
+                getline (cin ,name_file);
+                cout << "Size of Set A = ";
+                cin >> Asize ;
+                A.resize(Asize);
+                cout << "set A : " << endl;
+
+                A = new_data(A, name_file, Asize);
+
+
+
+                cout << "2nd file name : " ;
+                cin.ignore ();
+                getline (cin ,name_file);
+                cout << "Size of Set B = ";
+                cin >> Bsize ;
+                B.resize(Bsize);
+                cout << "Set B : " << endl;
+
+                B = new_data(B, name_file, Bsize);
+            }
+
+
+            else if (choice == "2"){
+                cin.ignore();
+
+                cout << "File 1 name : ";
+                A = load_data(name_file, A, Asize);
+
+                cout << "File 2 name : ";
+                B = load_data(name_file, B, Bsize);
+            }
+
+            else if (choice == "3"){
+                cout << "set A = {";
+                print_set(A, Asize);
+                cout << "}" << endl;
+
+                cout << "set B = {";
+                print_set(B, Bsize);
+                cout << "}" << endl;
+            }
+
+            else if (choice == "7"){
+                cout << "B-A = ";
+                diff(A, B, Asize, Bsize);
+                cout << endl;
+            }
+
+            else if (choice == "8"){
+                cout << "Cartesian product = ";
+                cart_product(A, B, Asize, Bsize);
+                cout << endl;
+            }
+
+            else if (choice == "9"){
+                cout << "Power set of A = ";
+                power_set(A, Asize);
+                cout << endl;
+            }
+
+            else if (choice =="10"){
+                disjoint(A,B,Asize,Bsize);
+                cout << endl;
+            }
+
+            else if (choice =="11") {
+                eq(A,B,Asize,Bsize);
+                cout << endl;
+            }
+            else if (choice == "12") {
+                propersub(A,B,Asize,Bsize);
+                cout << endl;
+            }
+        }
+
+    return 0;
+}
+
+// Function 1
+valarray<int> new_data (valarray<int> X, string name, int set_size) {
+    fstream file;
+
+    name.append(".txt");
+    file.open(name.c_str() , ios :: trunc | ios :: out);
+
+    for (int i=0 ; i < set_size ; i++) {
+        cout << "=> ";
+        cin >> X[i];
+        file << X[i] << '\n';
+    }
+
+    file.close();
+
+    return X;
+}
+
+// Function 2
+valarray<int> load_data (string name, valarray<int> X, int& set_size) {
+    int n = 0;
+    fstream file;
+
+    getline(cin, name);
+
+    name.append(".txt");
+
+    file.open(name.c_str() , ios :: in);
+    while (!file.fail()) {
+        file >> X[n];
+        n++;
+    }
+
+    file.close();
+
+    set_size = n - 1;
+
+    return X;
+}
+
+// Function 3
+void print_set(valarray<int> X, int set_size)
+{
+    for (int j=0 ; j < set_size ; j++) {
+        cout << X[j];
+        if (j != set_size - 1) cout << ",";
+    }
+}
+
+// Function 7
+void diff(valarray<int> set1, valarray<int> set2, int set1_length, int set2_length){
+    int set_diff[set2_length], diff_index=0;
+    bool check = true;
+
+    for (int i=0; i<set2_length; i++) {
+        for (int j=0; j<set1_length; j++) {
+            if (set2[i] == set1[j]) {
+                check = false;
+                break;
+            }
+        }
+        if (check) {
+            set_diff[diff_index] = set2[i];
+            diff_index++;
+        }
+        check = true;
+    }
+
+    cout << "{";
+    for (int k=0; k < diff_index; k++) {
+        cout << set_diff[k];
+        if (k < diff_index-1) cout << ",";
+    }
+    cout << "}" << endl;
+}
+
+// Function 8
+void cart_product(valarray<int> set1, valarray<int> set2, int set1_length, int set2_length){
+    cout << "{";
+    for (int i=0; i<set1_length; i++) {
+        for (int j=0; j<set2_length; j++) {
+            cout << "(";
+            cout << set1[i] << "," << set2[j];
+            cout << ")";
+            if (i != set1_length - 1 || j != set2_length - 1)cout << ",";
+        }
+    }
+    cout << "}" << endl;
+}
+
+// Function 9
+void power_set(valarray<int> set1, int set1_length) {
+    int power = pow(2,set1_length);
+
+    cout << "{";
+    for (int i = 0; i < power; i++) {
+        cout << "{";
+
+        bool first = true;
+        for (int j = 0; j < set1_length; j++ ) {
+            if(i & (1<<j)) {
+                if (first) {first = false;}
+                else {cout << ",";}
+                cout << set1[j];
+            }
+        }
+        cout << "}";
+        if (i != power - 1)cout << ",";
+    }
+    cout << "}";
+}
+// Function 10
+void disjoint (valarray <int> A, valarray <int> B , int Asize , int Bsize )  // fun. to check if disjoint choice 10
+    {
+    int simi = 0  ;
+    for (int i=0 ; i < Asize;i++)
+        {for (int j=0;j < Bsize ;j++)
+            {if (A[i]==B[j])
+                    {simi+=1;}}}
+    if (simi==0)
+        { cout << "The two sets are disjoint" << endl; }
+    else if (simi > 0 )
+        cout << "The two sets aren't disjoint" << endl; }
+
+// Function 11
+void eq (valarray <int> A , valarray <int > B , int Asize , int Bsize) // fun. to check if equal choice 11
+{       int simi = 0;
+        for(int i=0;i<Asize;++i)
+          {for(int j=i+1;j<Asize;)
+            {if(A[i]==A[j])
+               {for(int k=j;k<Asize-1;++k)  // This part to ensure we don't have repeatd values in the set A .
+                  {A[k]=A[k+1];}
+                   Asize-=1;}
+
+             else
+                ++j;}}
+
+        for(int i=0;i<Bsize;++i)
+                { for(int j=i+1;j<Bsize;)
+                        { if(B[i]==B[j])
+                                { for(int k=j;k<Bsize-1;++k)// This part to ensure we don't have repeatd values in the set B .
+                                        B[k]=B[k+1];
+                                        Bsize-=1;}
+
+                          else
+                                ++j;}}
+
+        for (int i=0 ; i < Asize;i++)
+                {for (int j=0;j < Bsize ;j++)
+                        {if (A[i]==B[j])
+                                {simi+=1;}}}
+        if (simi == Asize)
+                {cout << "- The two sets are equal" << endl;}  // if similarities are equal to elements number , then they're equal
+        else if (simi < Asize)
+                cout << "- The two sets aren't equal" << endl;
+}
+
+// Function 12
+void propersub (valarray<int>A , valarray <int> B , int Asize ,int Bsize)
+{ int differ=0;
+for(int i=0;i<Asize;++i)
+    {for(int j=i+1;j<Asize;)
+        {if(A[i]==A[j])
+           {for(int k=j;k<Asize-1;++k)  // This part to ensure we don't have repeatd values in the set A .
+              {A[k]=A[k+1];}
+               Asize-=1;}
+
+         else
+                ++j;}}
+
+for(int i=0;i<Bsize;++i)
+   { for(int j=i+1;j<Bsize;)
+       { if(B[i]==B[j])
+           { for(int k=j;k<Bsize-1;++k)         // This part to ensure we don't have repeatd values in the set B .
+                 B[k]=B[k+1];
+                 Bsize-=1;}
+
+          else
+              ++j;}}
+
+if (Asize > Bsize)
+  {for (int j=0 ; j < Bsize;j++)
+  {for (int i=0;i < Asize ;i++)
+     {if (A[i]==B[j])
+        {differ+=1;}}}
+   if (differ==Bsize)
+        cout << "B is a proper subset of A" << endl;}
+else if (Asize < Bsize)
+        { for (int i=0 ; i < Asize;i++)
+        {for (int j=0;j < Bsize ;j++)
+          {if (A[i]==B[j])
+                {differ+=1;}}}
+           if (differ==Asize)
+                cout << "A is a proper subset of B" << endl;
+    }
+else
+            cout << "- Neither Set A or B proper subset of the other " << endl;}
